@@ -1,20 +1,46 @@
+//@import "../../styles/";
+//
+//.reqAi {
+//    padding: 10px 8px;
+//    border-radius: 10px;
+//    background: rgb(235, 235, 235);
+//    align-self: flex-end;
+//    word-break: break-word;
+//    max-width: 90%;
+//}
+//
+//.resAi {
+//    padding: 10px 8px;
+//    border-radius: 10px;
+//    background: linear-gradient(315deg, #086bcd, #29a0ff);
+//    color: $white;
+//    align-self: flex-start;
+//    overflow-wrap: break-word;
+//    max-width: 90%;
+//}
+
+
 @import "../../styles/";
 
 .reqAi {
-    padding: 10px 8px;
-    border-radius: 10px;
+    padding: 8px 16px;
+    margin: 8px 0;
+    border-radius: 12px;
     background: rgb(235, 235, 235);
     align-self: flex-end;
     word-break: break-word;
-    max-width: 90%;
+    max-width: 80%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .resAi {
-    padding: 10px 8px;
-    border-radius: 10px;
+    padding: 8px 16px;
+    margin: 8px 0;
+    border-radius: 12px;
     background: linear-gradient(315deg, #086bcd, #29a0ff);
     color: $white;
     align-self: flex-start;
-    overflow-wrap: break-word;
-    max-width: 90%;
+    word-break: break-word;
+    max-width: 80%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }

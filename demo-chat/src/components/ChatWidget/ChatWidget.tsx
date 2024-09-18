@@ -1,7 +1,5 @@
 
-
-
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 import ChatBot from '../ChatBot/ChatBot';
 import styles from './ChatWidget.module.scss';
@@ -15,7 +13,7 @@ function ChatWidget({ isLeft = false }: IChatWidgetProps) {
     const checkUserAndOpenChat = async () => {
         const username = localStorage.getItem('username');
         if (username) {
-            const response = await fetch('http://localhost:8222/create_new_chat/', {
+            const response = await fetch('https://chat-nsv.up.railway.app/create_new_chat/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: username }),

@@ -8,6 +8,7 @@ import ChatMessage from "../ChatMessage/ChatMessage";
 import { IChatBotProps, IChatMessage } from "../../types/Chat";
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
+
 function ChatBot({ closeChat, isLeft }: IChatBotProps) {
     const { transcript, listening, resetTranscript } = useSpeechRecognition();
     const [message, setMessage] = useState<IChatMessage>({ text: '', isMe: true });
@@ -16,7 +17,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
     const [isRegistered, setIsRegistered] = useState(false); // Флаг регистрации
     const [email, setEmail] = useState(''); // Поле email
     const [password, setName] = useState('');  // Поле name
-    const [socket, setSocket] = useState<WebSocket | null>(null); // WebSocket
+    const [, setSocket] = useState<WebSocket | null>(null); // WebSocket
 
     const chatContainerRef = useRef<HTMLDivElement>(null);
     const inpTextRef = useRef<HTMLDivElement>(null);
@@ -40,7 +41,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
         const initializeWebSocket = () => {
             const username = localStorage.getItem('username');
             if (username && !wsRef.current) { // Проверяем, что WebSocket еще не создан
-                const ws = new WebSocket(`ws://localhost:8222/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+                const ws = new WebSocket(`wss://chat-nsv.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
                 wsRef.current = ws; // Сохраняем WebSocket в useRef
 
                 ws.onopen = () => {
@@ -85,7 +86,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
             const chatId = localStorage.getItem('ChatId');
             if (chatId) {
                 try {
-                    const response = await fetch(`http://localhost:8222/get_chat_messages/${chatId}`);
+                    const response = await fetch(`https://chat-nsv.up.railway.app/get_chat_messages/${chatId}`);
                     if (!response.ok) {
                         throw new Error('Не удалось загрузить сообщения чата');
                     }
@@ -127,7 +128,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
             const formData = new FormData();
             formData.append('username', password); // Передаем email как username
             formData.append('password', email); // Передаем password
-            const response = await fetch('http://localhost:8222/register/', {
+            const response = await fetch('https://chat-nsv.up.railway.app/register/', {
                 method: 'POST',
                 body: formData,
             });
@@ -142,7 +143,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
 
             const username = localStorage.getItem('username') || '';
             if (username) {
-                const response = await fetch('http://localhost:8222/create_new_chat/', {
+                const response = await fetch('https://chat-nsv.up.railway.app/create_new_chat/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: username }),
@@ -156,7 +157,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
                 }
             }
 
-            const ws = new WebSocket(`ws://localhost:8222/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+            const ws = new WebSocket(`wss://chat-nsv.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
             setSocket(ws);
             wsRef.current = ws; // Сохраняем WebSocket в useRef
 
@@ -267,7 +268,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
             return;
         }
 
-        const apiUrl = 'http://localhost:8222/save_chat_history/' + sessionId;
+        const apiUrl = 'https://chat-nsv.up.railway.app/save_chat_history/' + sessionId;
 
         const data = {
             username: username
@@ -299,7 +300,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
                     <div className={styles.registerForm}>
                         <input
                             type="email"
-                            placeholder="Введите email"
+                            placeholder="Введите телефон"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
@@ -313,13 +314,24 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
                     </div>
                 ) : (
                     <div className={styles.inpForm}>
-                        <div className={styles.inpText}
-                             contentEditable
-                             placeholder="Введите ваше сообщение"
-                             role="textbox"
-                             onKeyDown={handleKeyDown}
-                             onInput={handleInput}
-                             ref={inpTextRef}/>
+                        {/*<div className={styles.inpText}*/}
+                        {/*     contentEditable*/}
+                        {/*     placeholder="Введите ваше сообщение"*/}
+                        {/*     role="textbox"*/}
+                        {/*     onKeyDown={handleKeyDown}*/}
+                        {/*     onInput={handleInput}*/}
+                        {/*     ref={inpTextRef}/>*/}
+                        <div
+                            className={styles.inpText}
+                            contentEditable
+                            role="textbox"
+                            onKeyDown={handleKeyDown}
+                            onInput={handleInput}
+                            ref={inpTextRef}
+                            data-placeholder="Введите ваше сообщение"
+                        />
+
+
                         <div className={styles.btnsWrapper}>
                             <button
                                 disabled={isWriting}
