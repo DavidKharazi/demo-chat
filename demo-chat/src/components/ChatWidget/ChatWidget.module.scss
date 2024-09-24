@@ -117,3 +117,19 @@
         opacity: 0;
     }
 }
+
+// Адаптивные стили
+@media (max-width: 480px) {
+  .widget {
+    &Container {
+      width: calc(100% - 40px); // Учитываем отступы по бокам
+      margin: 10px;
+      max-width: none;
+    }
+
+    &Button {
+      padding: 15px;
+      font-size: 12px;
+    }
+  }
+}

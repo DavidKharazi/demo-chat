@@ -41,7 +41,8 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
         const initializeWebSocket = () => {
             const username = localStorage.getItem('username');
             if (username && !wsRef.current) { // Проверяем, что WebSocket еще не создан
-                const ws = new WebSocket(`wss://chat-nsv.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+                // const ws = new WebSocket(`ws://localhost:8222/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+                const ws = new WebSocket(`wss://nsvcyberman.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
                 wsRef.current = ws; // Сохраняем WebSocket в useRef
 
                 ws.onopen = () => {
@@ -86,7 +87,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
             const chatId = localStorage.getItem('ChatId');
             if (chatId) {
                 try {
-                    const response = await fetch(`https://chat-nsv.up.railway.app/get_chat_messages/${chatId}`);
+                    const response = await fetch(`/get_chat_messages/${chatId}`);
                     if (!response.ok) {
                         throw new Error('Не удалось загрузить сообщения чата');
                     }
@@ -128,7 +129,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
             const formData = new FormData();
             formData.append('username', password); // Передаем email как username
             formData.append('password', email); // Передаем password
-            const response = await fetch('https://chat-nsv.up.railway.app/register/', {
+            const response = await fetch('https://nsvcyberman.up.railway.app/register/', {
                 method: 'POST',
                 body: formData,
             });
@@ -140,10 +141,13 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
 
             localStorage.setItem('username', password);
             localStorage.setItem('ChatId', data.session_id);
+            localStorage.setItem('name', email);
+
+            setIsRegistered(true);
 
             const username = localStorage.getItem('username') || '';
             if (username) {
-                const response = await fetch('https://chat-nsv.up.railway.app/create_new_chat/', {
+                const response = await fetch('https://nsvcyberman.up.railway.app/create_new_chat/', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: username }),
@@ -157,12 +161,13 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
                 }
             }
 
-            const ws = new WebSocket(`wss://chat-nsv.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+            // const ws = new WebSocket(`ws://localhost:8222/ws/rag_chat/?email=${encodeURIComponent(username)}`);
+            const ws = new WebSocket(`wss://nsvcyberman.up.railway.app/ws/rag_chat/?email=${encodeURIComponent(username)}`);
             setSocket(ws);
             wsRef.current = ws; // Сохраняем WebSocket в useRef
 
             ws.onopen = () => {
-                setChat(prevChat => [...prevChat, { text: data.message || "Регистрация прошла успешно! Вы можете начать общение.", isMe: false }]);
+                setChat(prevChat => [...prevChat, { text: data.message, isMe: false }]);
                 setIsRegistered(true);
             };
 
@@ -189,7 +194,7 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
 
         } catch (error) {
             toast.error(error instanceof Error ? error.message : "Произошла неизвестная ошибка");
-            setChat(prevChat => [...prevChat, { text: "Произошла ошибка при регистрации.", isMe: false }]);
+            setChat(prevChat => [...prevChat, { text: "Такой телефон существует.", isMe: false }]);
         }
     };
 
@@ -259,19 +264,25 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
         resetTranscript();
     };
 
+
+
+
+
     const sendChatHistory = () => {
         const sessionId = localStorage.getItem('ChatId');
         const username = localStorage.getItem('username');
+        const name = localStorage.getItem('name');
 
         if (!sessionId) {
             console.error('Session ID not found in localStorage');
             return;
         }
 
-        const apiUrl = 'https://chat-nsv.up.railway.app/save_chat_history/' + sessionId;
+        const apiUrl = 'https://nsvcyberman.up.railway.app/save_chat_history/' + sessionId;
 
         const data = {
-            username: username
+            username: username,
+            name: name
         };
 
         const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
@@ -300,13 +311,13 @@ function ChatBot({ closeChat, isLeft }: IChatBotProps) {
                     <div className={styles.registerForm}>
                         <input
                             type="email"
-                            placeholder="Введите телефон"
+                            placeholder="Введите имя"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
                         <input
                             type="text"
-                            placeholder="Введите имя"
+                            placeholder="Введите телефон"
                             value={password}
                             onChange={(e) => setName(e.target.value)}
                         />

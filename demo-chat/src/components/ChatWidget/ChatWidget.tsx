@@ -1,9 +1,10 @@
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import classNames from 'classnames';
 import ChatBot from '../ChatBot/ChatBot';
 import styles from './ChatWidget.module.scss';
 import { IChatWidgetProps } from '../../types/Chat';
+import {toast} from "react-toastify";
 
 function ChatWidget({ isLeft = false }: IChatWidgetProps) {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +14,7 @@ function ChatWidget({ isLeft = false }: IChatWidgetProps) {
     const checkUserAndOpenChat = async () => {
         const username = localStorage.getItem('username');
         if (username) {
-            const response = await fetch('http://localhost:8222/create_new_chat/', {
+            const response = await fetch('https://nsvcyberman.up.railway.app/create_new_chat/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: username }),
@@ -22,12 +23,17 @@ function ChatWidget({ isLeft = false }: IChatWidgetProps) {
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem('ChatId', data.session_id); // Сохраняем session_id
+            } else if (response.status === 404) {
+                // Если получен 404, не удалось создать новый чат — открываем форму регистрации
+                localStorage.removeItem('username'); // Удаляем username, чтобы отобразить форму
             } else {
-                throw new Error('Не удалось создать новый чат');
+                toast.error('Не удалось создать новый чат');
+                return;
             }
         }
-        setIsOpen(true);
+        setIsOpen(true); // Открываем чат
     };
+
 
 
 
@@ -70,5 +76,11 @@ function ChatWidget({ isLeft = false }: IChatWidgetProps) {
 }
 
 export default ChatWidget;
+
+
+
+
+
+
 
 

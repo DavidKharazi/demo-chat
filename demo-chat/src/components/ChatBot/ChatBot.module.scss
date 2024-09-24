@@ -264,13 +264,84 @@
   transform: translateY(0);
 }
 
-@media (max-width: 480px) {
-  .registerForm {
-    padding: 16px;
-    width: 100%;
-  }
+//@media (max-width: 480px) {
+//  .registerForm {
+//    padding: 16px;
+//    width: 100%;
+//  }
+//
+//  .registerForm input, .registerForm button {
+//    font-size: 14px;
+//  }
+//}
 
-  .registerForm input, .registerForm button {
-    font-size: 14px;
+
+@media (max-width: 480px) {
+  .botContainer {
+    width: 100%;
+    top: 20px;
+    right: 12px;
+    height: 90vh;
+    border-radius: 0;
+    padding: 10px 10px 0 10px; // Убираем нижний отступ
+    border: none;
+    display: flex;
+    flex-direction: column;
+
+    .botWrapper {
+      height: calc(100% - 60px); // Учитываем высоту формы ввода
+      overflow-y: auto;
+    }
+
+    .chat {
+      height: 100%;
+      border-radius: 0;
+    }
+
+    .inpForm {
+      position: relative; // Изменено с fixed на relative
+      bottom: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid $medium-gray;
+      margin-top: 10px;
+      margin-bottom: 10px;
+
+      .inpText {
+        width: calc(100% - 100px); // Учитываем ширину кнопок
+        font-size: 14px;
+        max-height: 100px; // Ограничиваем максимальную высоту
+        overflow-y: auto;
+      }
+
+      .btnsWrapper {
+        padding-right: 5px;
+        height: auto; // Позволяем высоте адаптироваться
+        min-height: 54px;
+      }
+
+      .btnVoice, .inpSubmit {
+        width: 40px;
+        height: 40px;
+        flex-shrink: 0; // Предотвращаем сжатие кнопок
+      }
+    }
+
+    .closeBtnRight, .closeBtnLeft {
+      top: -45px;
+      width: 40px;
+      height: 40px;
+      font-size: 30px;
+    }
+
+    .closeBtnRight {
+      right: 10px;
+    }
+
+    .closeBtnLeft {
+      left: 10px;
+    }
   }
 }
